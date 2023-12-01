@@ -1,12 +1,22 @@
 from typing import Generator
 
+
+def find_all(string: str, substring: str) -> Generator[int, None, None]:
+    """Find all indices of occurrences of `substring` in `string`."""
+    from_idx = 0
+    while (fi := string.find(substring, from_idx)) != -1:
+        yield fi
+        from_idx = fi + 1
+
+
 tot = 0
 with open(r"1.in.txt") as f:
     for line in f:
-        digits = [x for x in line if x.isdigit()]
-        num = int(digits[0] + digits[-1])
+        digits = [int(x) for x in line if x.isdigit()]
+        num = 10 * digits[0] + digits[-1]
         tot += num
 print(tot)
+assert tot == 54159
 
 ### PART 2
 vals = {
@@ -15,13 +25,6 @@ vals = {
         ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"], 1
     )
 }
-
-
-def find_all(string: str, substring: str) -> Generator[int, None, None]:
-    from_idx = 0
-    while (fi := string.find(substring, from_idx)) != -1:
-        yield fi
-        from_idx = fi + 1
 
 
 tot2 = 0
@@ -38,5 +41,5 @@ with open(r"1.in.txt") as f:
         num = digits[0][1] * 10 + digits[-1][1]
         tot2 += num
 
-print(tot2)  # fout: 55379, 53859, 54296
-# goed: 53866
+print(tot2)
+assert tot2 == 53866
