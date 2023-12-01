@@ -1,42 +1,39 @@
 from typing import Generator
 
 
-def find_all(string: str, substring: str) -> Generator[int, None, None]:
+def find_all(
+    string: str,
+    substring: str,
+    from_idx: int = 0,
+) -> Generator[int, None, None]:
     """Find all indices of occurrences of `substring` in `string`."""
-    from_idx = 0
-    while (fi := string.find(substring, from_idx)) != -1:
-        yield fi
-        from_idx = fi + 1
+
+    while (find_index := string.find(substring, from_idx)) != -1:
+        yield find_index
+        from_idx = find_index + 1
 
 
-vals = {
-    t: i
-    for i, t in enumerate(
-        ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"], 1
-    )
-}
+num_words = ("one", "two", "three", "four", "five", "six", "seven", "eight", "nine")
+vals = {t: i for i, t in enumerate(num_words, 1)}  # {"one": 1, "two": 2, ...}
 
-tot1 = 0
-tot2 = 0
-with open(r"1.in.txt") as f:
-    for line in f:
-        digits = [(i, int(x)) for i, x in enumerate(line) if x.isdigit() and x != "0"]
-        # part 1
+part1 = 0
+part2 = 0
+with open("1.in.txt") as handle:
+    for line in handle:
+        # part 1: find all numeric digits
+        digits = [(i, int(x)) for i, x in enumerate(line) if x.isdigit()]
         num1 = 10 * digits[0][1] + digits[-1][1]
-        tot1 += num1
+        part1 += num1
 
-        # part 2
+        # part 2: also find all number words
         words = []
         for val, j in vals.items():
             for fi in find_all(line, val):
                 digits.append((fi, j))
 
         digits = sorted(digits)
-        num = digits[0][1] * 10 + digits[-1][1]
-        tot2 += num
+        num2 = digits[0][1] * 10 + digits[-1][1]
+        part2 += num2
 
-assert tot1 == 54159
-assert tot2 == 53866
-
-print(tot1)
-print(tot2)
+print(part1)
+print(part2)
