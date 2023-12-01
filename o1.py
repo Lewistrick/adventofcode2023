@@ -1,3 +1,5 @@
+from typing import Generator
+
 tot = 0
 with open(r"1.in.txt") as f:
     for line in f:
@@ -14,19 +16,22 @@ vals = {
     )
 }
 
+
+def find_all(string: str, substring: str) -> Generator[int, None, None]:
+    from_idx = 0
+    while (fi := string.find(substring, from_idx)) != -1:
+        yield fi
+        from_idx = fi + 1
+
+
 tot2 = 0
 with open(r"1.in.txt") as f:
     for line in f:
         digits = [(i, int(x)) for i, x in enumerate(line) if x.isdigit() and x != "0"]
         words = []
         for val, j in vals.items():
-            if (fi := line.find(val)) == -1:
-                continue
-
-            digits.append((fi, j))
-            while (newfi := line.find(val, fi + 1)) != -1:
-                digits.append((newfi, j))
-                fi = newfi
+            for fi in find_all(line, val):
+                digits.append((fi, j))
 
         digits = sorted(digits)
 
