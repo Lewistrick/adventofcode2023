@@ -1,8 +1,10 @@
 from collections import defaultdict
 import math
 
-nums = {}
+# save parts as {coordinate: part}
 parts = {}
+# save numbers as {coordinate: num}, where the *last* digit of a number is stored
+nums = {}
 
 with open("03.in") as lines:
     for li, line in enumerate(lines):
@@ -17,6 +19,8 @@ with open("03.in") as lines:
             if currnum:
                 nums[(li, ci - 1)] = int(currnum)
                 currnum = ""
+        # Forgot this first: if a num is at the end of a line, it should be added.
+        # Note that the -1 is omitted here because ci is part of the number
         if currnum:
             nums[(li, ci)] = int(currnum)
 
@@ -24,41 +28,34 @@ part1 = 0
 lastline = -1
 gears_touched = defaultdict(list)
 for (num_li, num_ci1), num in nums.items():
-    if lastline != num_li and lastline != -1:
-        print()
+    # if lastline != num_li and lastline != -1:
+    #     print()
     lastline = num_li
 
+    # Find the coordinate of the first digit of the number
     num_ci0 = num_ci1 - int(math.log(num, 10))
-    # check if touches part
-    touched_parts = []
+
+    # Check if the number touches a part
+    touched_parts = False
     for ci in range(num_ci0 - 1, num_ci1 + 2):
         for li in (num_li - 1, num_li, num_li + 1):
             if (li, ci) in parts:
+                touched_parts = True
                 touched_part = parts[(li, ci)]
-                touched_parts.append((touched_part, li, ci))
+                # Check if the touched part is a gear
                 if touched_part == "*":
-                    # gear touched!
                     gears_touched[(li, ci)].append(num)
-            if num == 92:
-                print(f"Checked: {(li, ci)}")
     if touched_parts:
-        print(f"{num} touched {touched_parts}", end=" / ")
         part1 += num
-    else:
-        print(f"{num} doesn't touch any parts", end=" / ")
-        # input()
-    print(f"Total: {part1}")
 
 print(part1)
-# 519922 too low
-# 521740 too high
-# 521601 correct
 
 part2 = 0
 for gear, touches in gears_touched.items():
     if len(touches) == 1:
         continue
 
-    n1, n2 = touches
+    n1, n2 = touches  # assumes that a gear is touched by at most 2 numbers
     part2 += n1 * n2
+
 print(part2)
