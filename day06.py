@@ -16,6 +16,20 @@ for maxtime, record in games:
     part1 *= ways2win
 print(part1)
 
+
+part2 = 0
+times = [game[0] for game in games]
+dists = [game[1] for game in games]
+m = int("".join(map(str, times)))
+r = int("".join(map(str, dists)))
+# print(m, r)
+
+for s in range(1, m):
+    d = s * (m - s)
+    if d > r:
+        part2 += 1
+print(part2)
+
 # ---
 # distance d is a function of time t
 # where t goes from 0..m (m being max time)
@@ -49,19 +63,11 @@ print(part1)
 # d1 = (-2m + 2sqrt(m^2+C)) / -2 = m - sqrt(m^2 + C)
 # d2 = (-2m - 2sqrt(m^2+C)) / -2 = m + sqrt(m^2 + C)
 # where
-# sqrt(m^2 + C) = sqrt(m^2 - m^2 - m - r) = sqrt(m - r)
+# sqrt(m^2 + C) = sqrt(m^2 - m^2 - m - r) = sqrt(-m - r)
 # so
-# d1 = m - sqrt(m-r)
-# d2 = m + sqrt(m-r)
+# d1 = m - sqrt(-m - r)
+# d2 = m + sqrt(-m - r)
 
-times = [game[0] for game in games]
-dists = [game[1] for game in games]
-
-m = int("".join(map(str, times)))
-r = int("".join(map(str, dists)))
-print(m, r)
-
-
-d1 = m - sqrt(m - r)
-d2 = m + sqrt(m - r)
-print(d1, d2)
+# d1 = m - sqrt(-m - r)
+# d2 = m + sqrt(-m - r)
+# print(d1, d2)
