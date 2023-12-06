@@ -43,6 +43,8 @@ print(part2)
 #   = -m^2 + 2tm - t^2 - m
 #   = -t^2 + 2tm - m^2 - m
 
+## everything below here seems to be correct (wolframalpha says the same)
+
 # now given d is a function of t and m being constant,
 # we want to find the intersections with r, the record distance
 # -t^2 + 2tm - m^2 - m = r
@@ -71,3 +73,6 @@ print(part2)
 # d1 = m - sqrt(-m - r)
 # d2 = m + sqrt(-m - r)
 # print(d1, d2)
+
+## -m-r is negative so we can't take sqrt
+## everything from the abc formula onward seems to be correct
