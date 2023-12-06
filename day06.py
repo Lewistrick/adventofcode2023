@@ -1,4 +1,4 @@
-from tqdm import tqdm
+from math import sqrt
 
 with open("06.example.in") as f:
     times = map(int, f.readline().removeprefix("Time:").strip().split())
@@ -34,7 +34,6 @@ print(part1)
 # -t^2 + 2tm - m^2 - m = r
 # -t^2 + 2tm - m^2 - m - r = 0
 
-
 # we can solve this using the abc formula with
 # a = -1
 # b = 2m
@@ -62,7 +61,6 @@ m = int("".join(map(str, times)))
 r = int("".join(map(str, dists)))
 print(m, r)
 
-from math import sqrt
 
 d1 = m - sqrt(m - r)
 d2 = m + sqrt(m - r)
