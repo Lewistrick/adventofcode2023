@@ -1,6 +1,6 @@
 from math import sqrt
 
-with open("06.example.in") as f:
+with open("06.in") as f:
     times = map(int, f.readline().removeprefix("Time:").strip().split())
     dists = map(int, f.readline().removeprefix("Distance:").strip().split())
 
