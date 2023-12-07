@@ -7,6 +7,6 @@
 | 2   | 41417  | 38315  | started late                                        |
 | 3   | 11118  | 8366   | started in bed, didn't work out so well             |
 | 4   | 12134  | 20658  |                                                     |
-| 5   | 14500  | -      | I'll get to this at some point, I know how to do it |
+| 5   | 14500  | 53638  | Solved part 2 on day 7 when I had more time left    |
 | 6   | 3353   | 10178  | No more time in the morning to solve part 2 :(      |
 | 7   | 870    | 829    | Proud of my sorting key and of my first sub top 1k  |
