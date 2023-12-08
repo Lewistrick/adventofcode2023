@@ -3,7 +3,7 @@ from math import lcm
 
 nodes: dict[str, tuple[str, str]] = {}
 
-with open("08.txt") as f:
+with open("08.in") as f:
     instructions = f.readline().strip()
     f.readline()  # empty
     for line in f:
@@ -40,13 +40,18 @@ def end_determiner_p2(node: str):
 
 
 curr_nodes = [node for node in nodes.keys() if node.endswith("A")]
-cycle_lengths = {}
+cycle_lengths = []
 for node in curr_nodes:
-    cycle_lengths[node] = get_cycle_length(
-        nodes,
-        instructions,
-        node,
-        end_determiner_p2,
+    cycle_lengths.append(
+        get_cycle_length(
+            nodes,
+            instructions,
+            node,
+            end_determiner_p2,
+        )
     )
 
-print(lcm(*cycle_lengths.values()))
+# Two big assumptions here:
+# - every cycle only contains only one **Z
+# - every cycle length is a multiple of the instructions length
+print(lcm(*cycle_lengths))
