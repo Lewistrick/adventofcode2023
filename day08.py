@@ -1,3 +1,4 @@
+import re
 from itertools import cycle
 from math import lcm
 from typing import Callable
@@ -7,10 +8,9 @@ nodes: dict[str, tuple[str, str]] = {}
 
 with open("08.in") as f:
     instructions = f.readline().strip()
-    f.readline()  # empty
+    f.readline()  # empty line
     for line in f:
-        node, lr = line.strip().split(" = (")
-        left, right = lr.strip(")").split(", ")
+        node, left, right = re.findall(r"\w{3}", line)
         nodes[node] = (left, right)
 
 
