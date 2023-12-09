@@ -5,53 +5,28 @@ with open("09.in") as lines:
         data.append(list(map(int, line.split())))
 
 
-def extrapolate(row: list[list[int]]):
-    newrows: list[list[int]] = [row.copy()]
+def extrapolate(row: list[list[int]], future=True):
+    diffs: list[list[int]] = [row.copy()]
     while True:
         newrow = []
         for v1, v2 in zip(row[:-1], row[1:]):
             newrow.append(v2 - v1)
 
-        # print(row, "-->", newrow)
-
-        newrows.append(newrow)
-        if all(v == 0 for v in newrow):
-            break
-
-        row = newrow
-
-    newrows[-1].append(0)  # all zeroes
-    currval: int = 0
-    for oldrow in newrows[-2::-1]:
-        currval = oldrow[-1] + currval
-        oldrow.append(currval)
-
-    return currval
-
-
-def extrapolate_before(row: list[int]):
-    newrows: list[list[int]] = [row.copy()]
-    while True:
-        newrow = []
-        for v1, v2 in zip(row[:-1], row[1:]):
-            newrow.append(v2 - v1)
-
-        print(row, "-->", newrow)
-
-        newrows.append(newrow)
+        diffs.append(newrow)
         if all(v == 0 for v in newrow):
             break
 
         row = newrow
 
     history: list[list[int]] = []
-    currval: int = 0
-    for r in newrows[::-1]:
-        currval = r[0] - currval
-        history.append([currval] + r)
-
-    for row in history:
-        print(row)
+    currval = 0
+    for r in diffs[::-1]:
+        if future:
+            currval += r[-1]
+            history.append(r + [currval])
+        else:
+            currval = r[0] - currval
+            history.append([currval] + r)
 
     return currval
 
@@ -65,9 +40,7 @@ print(part1)
 
 part2 = 0
 for row in data:
-    newval = extrapolate_before(row.copy())
-    print(newval)
-    print()
+    newval = extrapolate(row.copy(), future=False)
     part2 += newval
 
 print(part2)
