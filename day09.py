@@ -8,15 +8,12 @@ with open("09.in") as lines:
 def extrapolate(row: list[list[int]], future=True):
     diffs: list[list[int]] = [row.copy()]
     while True:
-        newrow = []
-        for v1, v2 in zip(row[:-1], row[1:]):
-            newrow.append(v2 - v1)
-
-        diffs.append(newrow)
-        if all(v == 0 for v in newrow):
+        diffrow = [v2 - v1 for v1, v2 in zip(row[:-1], row[1:])]
+        diffs.append(diffrow)
+        if all(v == 0 for v in diffrow):
             break
 
-        row = newrow
+        row = diffrow
 
     history: list[list[int]] = []
     currval = 0
@@ -31,16 +28,8 @@ def extrapolate(row: list[list[int]], future=True):
     return currval
 
 
-part1 = 0
-for row in data:
-    newval = extrapolate(row.copy())
-    part1 += newval
-
+part1 = sum(extrapolate(row.copy()) for row in data)
 print(part1)
 
-part2 = 0
-for row in data:
-    newval = extrapolate(row.copy(), future=False)
-    part2 += newval
-
+part2 = sum(extrapolate(row.copy(), future=False) for row in data)
 print(part2)
