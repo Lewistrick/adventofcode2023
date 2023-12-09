@@ -15,15 +15,15 @@ def extrapolate(row: list[list[int]], future=True):
 
         row = diffrow
 
-    history: list[list[int]] = []
+    diffrows: list[list[int]] = []
     currval = 0
     for r in diffs[::-1]:
         if future:
             currval += r[-1]
-            history.append(r + [currval])
+            diffrows.append(r + [currval])
         else:
             currval = r[0] - currval
-            history.append([currval] + r)
+            diffrows.append([currval] + r)
 
     return currval
 
