@@ -1,7 +1,7 @@
 from collections import defaultdict
 
 
-def parse_line(line):
+def parse_line(line: str):
     _, nums = line.split(": ")
     left, right = nums.split(" | ")
     win = set(map(int, left.split()))
@@ -20,7 +20,7 @@ with open("04.in") as lines:
         scores[i] = score
 
 part2 = 0
-copies = defaultdict(int)  # game: n_copies (not counting original)
+copies = defaultdict(int)  # {game: n_copies} (not counting original)
 for gameid in sorted(scores.keys()):
     score = scores[gameid]
     ncopies = copies[gameid] + 1
