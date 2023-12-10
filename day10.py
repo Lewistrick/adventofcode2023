@@ -44,16 +44,25 @@ with open(file) as lines:
 
 prev1 = tuple(start)
 prev2 = tuple(start)
-# start position directions are south and west (done visually)
+# start position directions are south and west (determined visually)
 curr1 = (start[0] - 1, start[1])  # west
+curr2 = (start[0], start[1] + 1)  # south
 if example:
     curr1 = (start[0] + 1, start[1])  # east
-curr2 = (start[0], start[1] + 1)  # south
+
 nodes[start] = [curr1, curr2]
 part1 = 1
 
 
 def do_step(prev: Pos, curr: Pos):
+    """Do a step from a node to another node.
+
+    When the connection between nodes is A <-> B <-> C, and we just went from A to B,
+    we can only go to C and not back to A.
+
+    The assumption that both nodes passed to this function only have two ways can be
+    made because only nodes with two ways exist (|-LJ7F).
+    """
     poss1, poss2 = nodes[curr]
     newcurr = poss2 if poss1 == prev else poss1
     newprev = curr
@@ -69,6 +78,10 @@ while curr1 != curr2:
     connections.add(tuple(sorted((prev2, curr2))))
     prev1, curr1 = do_step(prev1, curr1)
     prev2, curr2 = do_step(prev2, curr2)
+
+    print(curr1, curr2)
+    if curr1 == start or curr2 == start:
+        breakpoint()
 
     part1 += 1
 
@@ -90,8 +103,9 @@ base_outside: Pos = (1, 3)
 # for every node in `spaces`, create a line from there to base_outside;
 # if it intersects an odd number of node connections, it is inside the loop
 # if it intersects an even number of node connections, it is outside the loop
-def ccw(A, B, C):
-    return (C[1] - A[1]) * (B[0] - A[0]) > (B[1] - A[1]) * (C[0] - A[0])
+def ccw(a, b, c):
+    """See https://bryceboe.com/2006/10/23/line-segment-intersection-algorithm/"""
+    return (c[1] - a[1]) * (b[0] - a[0]) > (b[1] - a[1]) * (c[0] - a[0])
 
 
 def intersects(a, b, c, d):
@@ -128,12 +142,18 @@ for node in tqdm(spaces):
     # optimization: for every node connecting to this node,
     # find direct neighbors (these are in the same group as this node)
 
+    # another optimization:
+    # find the formula y = ax+b for each `node` and for (currnode - outside_base)
+    # then find the intersection for every node with this line, determine the x point
+    # and if it's in the correct range
+
 print(len(inside), "inside")  # part2; 299 is too high
 print(len(outside), "outside")
 
 maxx = max(x for x, y in nodes)
 maxy = max(y for x, y in nodes)
 
+# show the map
 for y in range(1, maxy + 1):
     for x in range(1, maxx + 1):
         node = (x, y)

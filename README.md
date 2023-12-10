@@ -12,3 +12,4 @@
 | 7   | 870    | 829    | Proud of my sorting key and of my first sub top 1k  |
 | 8   | 4350   | 1887   | Optimized part 2 while it was bruteforcing          |
 | 9   | 2233   | 2618   | Double-checked part 2 too much                      |
+| 10  | 18754  | 13465  | Started late; needed day10.png to see intersections |
