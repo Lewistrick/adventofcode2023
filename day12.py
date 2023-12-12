@@ -10,7 +10,9 @@ with open("12.in") as lines:
 
 def solve(record: str, counts: list[int], depth=1) -> int:
     if not counts:
-        return 1
+        if all(ch in ".?" for ch in record):
+            return 1
+        return 0
 
     n_solutions = 0
     count, rest_counts = counts[0], counts[1:]
@@ -52,10 +54,11 @@ assert solve("???.###", [1, 1, 3]) == 1
 assert (sol := solve("?###????????", [3, 2, 1])) == 10, f"Wrong solution: {sol}"
 assert (sol := solve("#??.????#??.", [2, 1, 2, 1])) == 2, f"Wrong solution: {sol}"
 assert (sol := solve("??#???#?????.?", [5, 1, 1])) == 12, f"Wrong solution: {sol}"
+assert (sol := solve("???.??#????#?????", [3, 1])) == 3, f"Wrong solution: {sol}"
 
 part1 = 0
 for spring in tqdm(springs):
     subp1 = solve(*spring)
-    # print(spring, subp1)
+    print(spring, subp1)
     part1 += subp1
-print(part1)  # 9001 too high, 7323 too high
+print(part1)  # 9001 too high, 7323 too high, 6827 correct
