@@ -14,3 +14,4 @@
 | 9   | 2233   | 2618   | Double-checked part 2 too much                       |
 | 10  | 18754  | 13465  | Started late; needed day10.png to see intersections  |
 | 11  | 33778  | 31405  | I knew how part 2 would look like while doing part 1 |
+| 12  | 9163   | 3434   | Lots of bugs for part 1, caching ftw for part 2!     |
