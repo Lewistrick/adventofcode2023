@@ -1,4 +1,4 @@
-from tqdm import tqdm
+import functools
 
 springs = []
 with open("12.in") as lines:
@@ -8,7 +8,8 @@ with open("12.in") as lines:
         springs.append((spring, counts))
 
 
-def solve(record: str, counts: list[int], depth=1) -> int:
+@functools.lru_cache(maxsize=1000)
+def solve(record: str, counts: tuple[int], depth=1) -> int:
     if not counts:
         if all(ch in ".?" for ch in record):
             return 1
@@ -49,16 +50,23 @@ def solve(record: str, counts: list[int], depth=1) -> int:
     return n_solutions
 
 
-assert solve("###", [3]) == 1
-assert solve("???.###", [1, 1, 3]) == 1
-assert (sol := solve("?###????????", [3, 2, 1])) == 10, f"Wrong solution: {sol}"
-assert (sol := solve("#??.????#??.", [2, 1, 2, 1])) == 2, f"Wrong solution: {sol}"
-assert (sol := solve("??#???#?????.?", [5, 1, 1])) == 12, f"Wrong solution: {sol}"
-assert (sol := solve("???.??#????#?????", [3, 1])) == 3, f"Wrong solution: {sol}"
+assert solve("###", (3,)) == 1
+assert solve("???.###", (1, 1, 3)) == 1
+assert (sol := solve("?###????????", (3, 2, 1))) == 10, f"Wrong solution: {sol}"
+assert (sol := solve("#??.????#??.", (2, 1, 2, 1))) == 2, f"Wrong solution: {sol}"
+assert (sol := solve("??#???#?????.?", (5, 1, 1))) == 12, f"Wrong solution: {sol}"
+assert (sol := solve("???.??#????#?????", (3, 1))) == 3, f"Wrong solution: {sol}"
 
 part1 = 0
-for spring in tqdm(springs):
-    subp1 = solve(*spring)
-    print(spring, subp1)
+for spring, counts in springs:
+    subp1 = solve(spring, tuple(counts))
     part1 += subp1
 print(part1)  # 9001 too high, 7323 too high, 6827 correct
+
+part2 = 0
+for spring, counts in springs:
+    new_spring = "?".join(spring for _ in range(5))
+    new_counts = tuple(counts * 5)
+    subp2 = solve(new_spring, new_counts)
+    part2 += subp2
+print(part2)
