@@ -56,6 +56,6 @@ assert (sol := solve("??#???#?????.?", [5, 1, 1])) == 12, f"Wrong solution: {sol
 part1 = 0
 for spring in tqdm(springs):
     subp1 = solve(*spring)
-    print(spring, subp1)
+    # print(spring, subp1)
     part1 += subp1
 print(part1)  # 9001 too high, 7323 too high
