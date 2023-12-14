@@ -1,4 +1,5 @@
 def clean_input(input_: str) -> list[list[str]]:
+    """Given a grid as lines, make a matrix of it"""
     grid = []
     for row in input_.split("\n"):
         if not row.strip():
@@ -7,20 +8,22 @@ def clean_input(input_: str) -> list[list[str]]:
     return grid
 
 
-def solve_p1(rows):
+def solve_p1(rows: list[str]):
+    """Find exact mirrors in the horizontal position.
+
+    To find mirrors in the vertical position, rotate the grid (`rotate_clockwise`).
+    """
     lastrow = ""
     for i, row in enumerate(rows):
+        # Start checking from the second row onward
         if lastrow != row:
             lastrow = row
             continue
 
         mirror = True
-        for i1, i2 in zip(range(i - 1, -1, -1), range(i, len(rows))):
+        # Somehow this doesn't work with indexing the rows. Let's keep the indices.
+        for i1, i2 in zip(range(i - 2, -1, -1), range(i + 1, len(rows))):
             row1, row2 = rows[i1], rows[i2]
-            # print("Comparing:")
-            # print(f"{i1+1:2d}", " ".join(row1))
-            # print(f"{i2+1:2d}", " ".join(row2), end=" ")
-            # print("equal" if row1 == row2 else "different")
             if row1 != row2:
                 mirror = False
                 break
@@ -33,54 +36,52 @@ def solve_p1(rows):
 
 
 def solve_p2(rows):
+    """Find mirrors with smudges (same as p1: in horizontal position)."""
     lastrow = ""
     for i, row in enumerate(rows):
         if lastrow == "":
             lastrow = row
             continue
-        if (total_smudges := calculate_smudges(lastrow, row, i - 1, i)) > 1:
+
+        # Start from either 0 or 1 smudges.
+        if (total_smudges := calculate_smudges(lastrow, row)) > 1:
             lastrow = row
             continue
 
-        # print()
-        # print("Possible match found...")
-
+        # Possible match found! Count the number of smudges; the total should be 1.
         for i1, i2 in zip(range(i - 2, -1, -1), range(i + 1, len(rows))):
             row1, row2 = rows[i1], rows[i2]
-            n_smudges = calculate_smudges(row1, row2, i1, i2)
+            n_smudges = calculate_smudges(row1, row2)
             total_smudges += n_smudges
 
+            # Stop checking if this (theoretical) mirror has too many smudges
             if total_smudges > 1:
-                # print("Not a match!")
                 break
 
+        # This is a mirror!
         if total_smudges == 1:
-            # print(f"Found match {i=}!")
             return i
 
-        # print(f"{i=} {total_smudges=}")
-
+        # This is not a mirror, keep checking
         lastrow = row
 
-    # print("Checked everything, not a match!")
+    # Checked all rows, not a match
     return 0
 
 
-def calculate_smudges(row1, row2, i1, i2):
-    n_smudges = sum(1 for e1, e2 in zip(row1, row2) if e1 != e2)
-    # print(f"{i1+1:2d}", " ".join(row1))
-    # print(f"{i2+1:2d}", " ".join(row2), end=" ")
-    # print(f"Found {n_smudges} smudges")
-    return n_smudges
+def calculate_smudges(row1, row2):
+    """Given a theoretical mirror in the middle between row1 and row2, count the number
+    of smudges by comparing every element seen in the mirror on both rows.
 
-
-def show_grid(grid):
-    for row in grid:
-        print(" ".join(str(el) for el in row))
+    """
+    return sum(1 for e1, e2 in zip(row1, row2) if e1 != e2)
 
 
 def rotate_clockwise(grid):
-    # every column in `grid` becomes a reversed row in the new grid
+    """Rotate the grid clockwise.
+
+    Every column in `grid` becomes a reversed row in the new grid.
+    """
     dirg = []
     for i in range(len(grid[0])):
         dirg.append([row[i] for row in grid][::-1])
@@ -95,25 +96,11 @@ grids = [clean_input(input_) for input_ in inputs]
 part1 = 0
 part2 = 0
 for grid in grids:
+    # Rotating the grid makes sure we can solve for vertical mirrors as well
     dirg = rotate_clockwise(grid)
-    horizontal = solve_p1(grid)
-    vertical = solve_p1(dirg)
-    part1 += 100 * horizontal + vertical
-
-    # print("-" * 80)
-
-    # show_grid(grid)
-    # print()
-    hor2 = solve_p2(grid)
-
-    # print("-" * 80)
-
-    # show_grid(dirg)
-    # print()
-    ver2 = solve_p2(dirg)
-    # print("-" * 80)
-    # print(hor2, ver2)
-    part2 += 100 * hor2 + ver2
+    # score = 100 * horizontal + 1 * vertical
+    part1 += 100 * solve_p1(grid) + solve_p1(dirg)
+    part2 += 100 * solve_p2(grid) + solve_p2(dirg)
 
 print(part1)
 print(part2)
