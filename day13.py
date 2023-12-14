@@ -38,32 +38,40 @@ def solve_p2(rows):
         if lastrow == "":
             lastrow = row
             continue
-        elif (total_smudges := calculate_smudges(lastrow, row)) <= 1:
-            pass
-        else:
+        if (total_smudges := calculate_smudges(lastrow, row, i - 1, i)) > 1:
+            lastrow = row
             continue
 
-        for i1, i2 in zip(range(i - 1, -1, -1), range(i, len(rows))):
+        # print()
+        # print("Possible match found...")
+
+        for i1, i2 in zip(range(i - 2, -1, -1), range(i + 1, len(rows))):
             row1, row2 = rows[i1], rows[i2]
-            print("Comparing:")
-            print(f"{i1+1:2d}", " ".join(row1))
-            print(f"{i2+1:2d}", " ".join(row2), end=" ")
-            n_smudges = calculate_smudges(row1, row2)
-            print(f"Found {n_smudges} smudges")
+            n_smudges = calculate_smudges(row1, row2, i1, i2)
             total_smudges += n_smudges
 
             if total_smudges > 1:
+                # print("Not a match!")
                 break
 
         if total_smudges == 1:
+            # print(f"Found match {i=}!")
             return i
 
+        # print(f"{i=} {total_smudges=}")
+
         lastrow = row
+
+    # print("Checked everything, not a match!")
     return 0
 
 
-def calculate_smudges(row1, row2):
-    return sum(1 for e1, e2 in zip(row1, row2) if e1 != e2)
+def calculate_smudges(row1, row2, i1, i2):
+    n_smudges = sum(1 for e1, e2 in zip(row1, row2) if e1 != e2)
+    # print(f"{i1+1:2d}", " ".join(row1))
+    # print(f"{i2+1:2d}", " ".join(row2), end=" ")
+    # print(f"Found {n_smudges} smudges")
+    return n_smudges
 
 
 def show_grid(grid):
@@ -79,7 +87,7 @@ def rotate_clockwise(grid):
     return dirg
 
 
-with open("13.ex") as file:
+with open("13.in") as file:
     inputs = file.read().split("\n\n")
 
 grids = [clean_input(input_) for input_ in inputs]
@@ -92,14 +100,20 @@ for grid in grids:
     vertical = solve_p1(dirg)
     part1 += 100 * horizontal + vertical
 
-    hor2 = solve_p2(grid)
     # print("-" * 80)
+
     # show_grid(grid)
     # print()
+    hor2 = solve_p2(grid)
+
+    # print("-" * 80)
+
+    # show_grid(dirg)
+    # print()
     ver2 = solve_p2(dirg)
+    # print("-" * 80)
     # print(hor2, ver2)
-    # breakpoint()
-    part2 += 100 * horizontal + vertical
+    part2 += 100 * hor2 + ver2
 
 print(part1)
 print(part2)
