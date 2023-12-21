@@ -15,5 +15,7 @@
 | 10  | 18754  | 13465  | Started late; needed day10.png to see intersections   |
 | 11  | 33778  | 31405  | I knew how part 2 would look like while doing part 1  |
 | 12  | 9163   | 3434   | Lots of bugs for part 1, caching ftw for part 2!      |
-| 13  | 23275  |        | Ain't got nobody time for this                        |
+| 13  | 23275  | 25790  | Ain't got nobody time for this                        |
 | 14  | 3399   | 6501   | Took a break in between; wasn't even that hard        |
+| 15  | 20548  | 16953  | Started late but part 1 was extremely easy            |
+| 16  | 4104   | 3750   | I really need to get started early to get top 1000    |
