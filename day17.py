@@ -1,4 +1,4 @@
-import random
+import time
 from collections import deque
 from typing import Deque
 
@@ -41,6 +41,9 @@ def solve(
         (xsrc, ysrc): [(0, deque(maxlen=maxlen))]
     }
     queue: list[Pos] = [(xsrc, ysrc)]
+    n_calculated = 0
+    n_todo = len(grid) * len(grid[0])
+    t0 = time.time()
     while queue:
         (x_, y_) = queue.pop(0)
         for currloss, curr_route in shortest_paths[(x_, y_)]:
@@ -71,13 +74,22 @@ def solve(
 
                 if options:
                     prevloss, _ = min(options, key=lambda option: option[0])
-                    if newloss > prevloss + 30:
+                    if newloss > prevloss + 3:
                         continue
                     # print(f"Options to {(newx, newy)}:")
                     # for option in sorted(options):
                     # print("-", option)
                     # if len(options) > 1:
                     #     breakpoint()
+                else:
+                    n_calculated += 1
+                    t_taken = time.time() - t0
+                    print(
+                        f"\rDone {n_calculated} of {n_todo} cells in {t_taken:.1f}s",
+                        end=". ",
+                    )
+                    if n_calculated % 1000 == 0:
+                        print(f"Queue size is now {len(queue)}.")
 
                 # A new route with minimal loss was found to (newx, newy)!
                 new_option = (newloss, newroute)
@@ -91,19 +103,20 @@ def solve(
 
                 # Update the queue (we need to update neighbors of this point too!)
                 queue.append((newx, newy))
-        if random.random() < 0.001:
-            show_dists(grid, shortest_paths)
+        # if random.random() < 0.001:
+        #     show_dists(grid, shortest_paths)
 
     options = shortest_paths[(xtgt, ytgt)]
     # for solution, route in sorted(options, key=lambda option: option[0]):
     #     print(route)
-
     solution, route = min(options)
+
+    print()
 
     return solution
 
 
-with open("17.ex") as f:
+with open("17.in") as f:
     lines = f.read().split("\n")
     grid = [[int(i) for i in row] for row in lines]
 
