@@ -1,70 +1,62 @@
+from collections import defaultdict
 from tqdm import tqdm
 from helpers import DIRS4, Pos
+from typing import DefaultDict
 
 
-def show_grid(hs, gridsizex, gridsizey, o, a):
-    minx = min(x for x, y in o)
-    miny = min(y for x, y in o)
-    maxx = max(x for x, y in o) + 1
-    maxy = max(y for x, y in o) + 1
-
-    for y in range(miny - 5, maxy + 5):
-        for x in range(minx - 5, maxx + 5):
+def show_grid(hs, gridsizex, gridsizey, curr, nvisited):
+    for y in range(gridsizey + 1):
+        for x in range(gridsizex + 1):
             if (x % gridsizex, y % gridsizey) in hs:
-                print("#", end="")
-            elif (x, y) in o:
-                print("O", end="")
-            elif (x, y) in a:
-                print(".", end="")
+                value = "#"
+            elif (x, y) in curr:
+                value = f"*{nvisited[(x,y)]}"
+            elif (x, y) in nvisited:
+                value = f" {nvisited[(x, y)]}"
             else:
-                print(" ", end="")
+                value = ""
+
+            print(f"{value:>5}", end="")
         print()
 
 
 def solve(hs: set[Pos], maxx: int, maxy: int, start: Pos, nsteps, part1=True) -> int:
-    outer_ring: set[Pos] = set()
-    outer_ring.add(start)
-    prev_outer_ring: set[Pos] = set()
-    n_seen_even = 1  # start
-    n_seen_uneven = 0
-    for step in tqdm(range(nsteps)):
-        next_outer_ring: set[Pos] = set()
-        for x, y in outer_ring:
-            for dx, dy in DIRS4:
-                newx, newy = (x + dx, y + dy)
-                if (newx, newy) in prev_outer_ring:
-                    continue
-                if part1:
-                    if newx < 0 or newy < 0 or newx >= maxx or newy >= maxy:
-                        continue
-                    if (newx, newy) in hs:
-                        continue
-                else:
-                    if (newx % (maxx + 1), newy % (maxy + 1)) in hs:
-                        continue
+    """The new plan: work with projected starts.
 
-                next_outer_ring.add((newx, newy))
+    1. Get the minimum distance to a projected start field in each direction (also diag)
+        For the example input, the minimum distance in all directions are as follows:
 
-        prev_outer_ring = outer_ring.copy()
-        outer_ring = next_outer_ring.copy()
+        26  21  22
+        15   0  15
+        22  21  26
 
-        # we start at step 0, which is even; puzzle counts this as step 1
-        if step % 2 == 1:
-            n_seen_even += len(outer_ring)
-        else:
-            n_seen_uneven += len(outer_ring)
+        This is, of course, mirrored: when travelling north, the same blocks are
+        used as when travelling south, just in different plots of land. The same goes
+        for the combinations E/W, NW/SE and NE/SW.
 
-        # show_grid(hs, maxx + 1, maxy + 1, outer_ring, all_seen)
-        # print(f"After {step+1} steps: {n_seen_even=} {n_seen_uneven=}")
-        # input(">>")
+    2. Calculate the number of projected starts that can be reached within the given
+        amount of steps.
+    """
 
-    if nsteps % 2 == 0:
-        return n_seen_even
-    return n_seen_uneven
+    # save the positions reached
+    current_positions: set[Pos] = set()
+    current_positions.add(start)
+    # save number of times visited for each cell
+    n_visited: DefaultDict[Pos, int] = defaultdict(int)
+    n_visited[start] = 1
+
+    print(f"Added {len(new_positions)} positions after step {step}")
+    current_positions = new_positions
+    for pos in current_positions:
+        n_visited[pos] += 1
+
+    show_grid(hs, maxx + 1, maxy + 1, current_positions, n_visited)
+
+    return sum(n_visited[cell] for cell in current_positions)
 
 
 start: Pos
-with open("21.in") as f:
+with open("21.ex") as f:
     garden_plots = set()
     maxx, maxy = 0, 0
     for y, row in enumerate(f):
